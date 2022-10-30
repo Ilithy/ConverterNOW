@@ -127,7 +127,11 @@ class _ElevatedButtonTransition extends AnimatedWidget {
       ),
       backgroundColor: MaterialStateProperty.resolveWith<Color?>(
         (Set<MaterialState> states) => states.contains(MaterialState.pressed)
-            ? Color.alphaBlend(Colors.white30, backgroundColor)
+            ? Color.alphaBlend(
+                Theme.of(context).brightness == Brightness.light
+                    ? Colors.black.withOpacity(0.18)
+                    : Colors.white30,
+                backgroundColor)
             : backgroundColor,
       ),
       // overlayColor can't be really used properly, see

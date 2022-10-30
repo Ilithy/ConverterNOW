@@ -23,7 +23,7 @@ class AppScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void openCalculator() {
-      const double modalHeight = 340;
+      const double modalHeight = 350;
       showModalBottomSheet<void>(
         context: context,
         shape: const RoundedRectangleBorder(
