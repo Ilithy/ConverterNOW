@@ -1,3 +1,4 @@
+import 'package:calculator_widget/animated_button.dart';
 import 'package:calculator_widget/calculator_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,22 +6,46 @@ import 'package:provider/provider.dart';
 import 'package:translations/app_localizations.dart';
 
 class CalculatorWidget extends StatelessWidget {
-  static const double buttonHeight = 70.0;
-  static const double buttonOpSize = buttonHeight * 0.8;
+  // Style
+  late double buttonHeight;
+
   final FocusNode focusKeyboard = FocusNode();
   static const String decimalSeparator = '.';
 
-  CalculatorWidget({Key? key}) : super(key: key);
+  final double modalHeight;
+
+  CalculatorWidget({
+    required this.modalHeight,
+    Key? key,
+  }) : super(key: key) {
+    buttonHeight = modalHeight / 6;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Color secondaryColor = Theme.of(context).colorScheme.secondary;
     final Brightness brightness = Theme.of(context).brightness;
+    final Color buttonOpColor = Color.alphaBlend(
+      (brightness == Brightness.light ? Colors.white : Colors.black)
+          .withOpacity(0.6),
+      Theme.of(context).primaryColor,
+    );
+    final Color buttonNumberColor = Color.alphaBlend(
+      (brightness == Brightness.light ? Colors.white : Colors.black)
+          .withOpacity(0.9),
+      Theme.of(context).primaryColor,
+    );
+    final Color buttonDelColor = Color.alphaBlend(
+      (brightness == Brightness.light ? Colors.white : Colors.black)
+          .withOpacity(0.6),
+      Theme.of(context).colorScheme.secondary,
+    );
+
+    final Color secondaryColor = Theme.of(context).colorScheme.secondary;
     final TextStyle buttonOpStyle =
-        TextStyle(fontSize: 35, color: secondaryColor);
+        TextStyle(fontSize: 35, color: Colors.white);
     final TextStyle buttonTextStyle = TextStyle(
       fontSize: 35,
-      color: Color(brightness == Brightness.dark ? 0xFFBBBBBB : 0xFF777777),
+      color: Colors.white,
     );
 
     return ChangeNotifierProvider(
@@ -39,7 +64,7 @@ class CalculatorWidget extends StatelessWidget {
             context.select<Calculator, String>((calc) => calc.currentNumber);
 
         return SizedBox(
-          height: 5 * buttonHeight,
+          height: 6 * buttonHeight,
           child: KeyboardListener(
             focusNode: focusKeyboard,
             onKeyEvent: (KeyEvent event) {
@@ -61,15 +86,9 @@ class CalculatorWidget extends StatelessWidget {
                   height: buttonHeight,
                   alignment: const Alignment(0, 0),
                   decoration: BoxDecoration(
-                      color: brightness == Brightness.dark
-                          ? const Color(0xFF2e2e2e)
-                          : Colors.white,
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black,
-                          blurRadius: 5.0,
-                        ),
-                      ]),
+                    color: buttonNumberColor,
+                    borderRadius: BorderRadius.circular(buttonHeight / 2),
+                  ),
                   child: SizedBox(
                     width: calcWidth,
                     child: Row(
@@ -142,6 +161,7 @@ class CalculatorWidget extends StatelessWidget {
                                 text: 'x²',
                                 buttonWidth: buttonWidth,
                                 buttonHeight: buttonHeight,
+                                backgroundColor: buttonOpColor,
                                 style: buttonOpStyle,
                                 onPressed: () {
                                   context.read<Calculator>().square();
@@ -150,6 +170,7 @@ class CalculatorWidget extends StatelessWidget {
                                 text: 'ln',
                                 buttonWidth: buttonWidth,
                                 buttonHeight: buttonHeight,
+                                backgroundColor: buttonOpColor,
                                 style: buttonOpStyle,
                                 onPressed: () {
                                   context.read<Calculator>().ln();
@@ -158,6 +179,7 @@ class CalculatorWidget extends StatelessWidget {
                                 text: 'n!',
                                 buttonWidth: buttonWidth,
                                 buttonHeight: buttonHeight,
+                                backgroundColor: buttonOpColor,
                                 style: buttonOpStyle,
                                 onPressed: () {
                                   context.read<Calculator>().factorial();
@@ -166,6 +188,7 @@ class CalculatorWidget extends StatelessWidget {
                                 text: '1/x',
                                 buttonWidth: buttonWidth,
                                 buttonHeight: buttonHeight,
+                                backgroundColor: buttonOpColor,
                                 style: buttonOpStyle,
                                 onPressed: () {
                                   context.read<Calculator>().reciprocal();
@@ -179,6 +202,7 @@ class CalculatorWidget extends StatelessWidget {
                                 text: '√',
                                 buttonWidth: buttonWidth,
                                 buttonHeight: buttonHeight,
+                                backgroundColor: buttonOpColor,
                                 style: buttonOpStyle,
                                 onPressed: () {
                                   context.read<Calculator>().squareRoot();
@@ -187,6 +211,7 @@ class CalculatorWidget extends StatelessWidget {
                                 text: 'log',
                                 buttonWidth: buttonWidth,
                                 buttonHeight: buttonHeight,
+                                backgroundColor: buttonOpColor,
                                 style: buttonOpStyle,
                                 onPressed: () {
                                   context.read<Calculator>().log10();
@@ -195,6 +220,7 @@ class CalculatorWidget extends StatelessWidget {
                                 text: 'e',
                                 buttonWidth: buttonWidth,
                                 buttonHeight: buttonHeight,
+                                backgroundColor: buttonOpColor,
                                 style: buttonOpStyle,
                                 onPressed: () {
                                   context.read<Calculator>().submitChar('e');
@@ -203,20 +229,48 @@ class CalculatorWidget extends StatelessWidget {
                                 text: 'π',
                                 buttonWidth: buttonWidth,
                                 buttonHeight: buttonHeight,
+                                backgroundColor: buttonOpColor,
                                 style: buttonOpStyle,
                                 onPressed: () {
                                   context.read<Calculator>().submitChar('π');
                                 }),
                           ],
                         ),
-                      if (columnsNumber > 4)
-                        Container(
-                          //divider
-                          width: 1.0,
-                          height: buttonHeight * 3.9,
-                          color: const Color(0xFFBBBBBB),
-                        ),
                       Column(children: [
+                        Row(
+                          children: [
+                            CalculatorButton(
+                              text: '√',
+                              buttonWidth: buttonWidth,
+                              buttonHeight: buttonHeight,
+                              backgroundColor: buttonOpColor,
+                              style: buttonOpStyle,
+                              onPressed: () {
+                                context.read<Calculator>().squareRoot();
+                              },
+                            ),
+                            CalculatorButton(
+                              text: 'x²',
+                              buttonWidth: buttonWidth,
+                              buttonHeight: buttonHeight,
+                              backgroundColor: buttonOpColor,
+                              style: buttonOpStyle,
+                              onPressed: () {
+                                context.read<Calculator>().square();
+                              },
+                            ),
+                            CalculatorButton(
+                              text: 'π',
+                              buttonWidth: buttonWidth,
+                              buttonHeight: buttonHeight,
+                              backgroundColor: buttonOpColor,
+                              style: buttonOpStyle,
+                              onPressed: () {
+                                context.read<Calculator>().submitChar('π');
+                              },
+                            ),
+                          ],
+                        ),
                         Column(
                           //creates numbers buttons from 1 to 9
                           children: List<Widget>.generate(3, (i) {
@@ -228,6 +282,7 @@ class CalculatorWidget extends StatelessWidget {
                                     text: char,
                                     buttonWidth: buttonWidth,
                                     buttonHeight: buttonHeight,
+                                    backgroundColor: buttonNumberColor,
                                     style: buttonTextStyle,
                                     onPressed: () {
                                       context
@@ -243,6 +298,7 @@ class CalculatorWidget extends StatelessWidget {
                               text: decimalSeparator,
                               buttonWidth: buttonWidth,
                               buttonHeight: buttonHeight,
+                              backgroundColor: buttonOpColor,
                               style: buttonTextStyle,
                               onPressed: () {
                                 context
@@ -253,6 +309,7 @@ class CalculatorWidget extends StatelessWidget {
                               text: '0',
                               buttonWidth: buttonWidth,
                               buttonHeight: buttonHeight,
+                              backgroundColor: buttonNumberColor,
                               style: buttonTextStyle,
                               onPressed: () {
                                 context.read<Calculator>().submitChar('0');
@@ -261,18 +318,13 @@ class CalculatorWidget extends StatelessWidget {
                               text: '=',
                               buttonWidth: buttonWidth,
                               buttonHeight: buttonHeight,
+                              backgroundColor: buttonOpColor,
                               style: buttonTextStyle,
                               onPressed: () {
                                 context.read<Calculator>().submitChar('=');
                               }),
                         ]),
                       ]),
-                      Container(
-                        //divider
-                        width: 1.0,
-                        height: buttonHeight * 3.9,
-                        color: const Color(0xFFBBBBBB),
-                      ),
                       Column(
                         children: <Widget>[
                           CalculatorButton(
@@ -281,9 +333,9 @@ class CalculatorWidget extends StatelessWidget {
                                   ? 'CE'
                                   : '←',
                               buttonWidth: buttonWidth,
-                              buttonHeight: buttonOpSize,
+                              buttonHeight: buttonHeight,
+                              backgroundColor: buttonDelColor,
                               style: buttonTextStyle,
-                              iconColor: secondaryColor,
                               onPressed: () {
                                 context
                                     .read<Calculator>()
@@ -295,7 +347,8 @@ class CalculatorWidget extends StatelessWidget {
                           CalculatorButton(
                               text: '÷',
                               buttonWidth: buttonWidth,
-                              buttonHeight: buttonOpSize,
+                              buttonHeight: buttonHeight,
+                              backgroundColor: buttonOpColor,
                               style: buttonOpStyle,
                               onPressed: () {
                                 context.read<Calculator>().submitChar('/');
@@ -303,7 +356,8 @@ class CalculatorWidget extends StatelessWidget {
                           CalculatorButton(
                               text: '×',
                               buttonWidth: buttonWidth,
-                              buttonHeight: buttonOpSize,
+                              buttonHeight: buttonHeight,
+                              backgroundColor: buttonOpColor,
                               style: buttonOpStyle,
                               onPressed: () {
                                 context.read<Calculator>().submitChar('*');
@@ -311,7 +365,8 @@ class CalculatorWidget extends StatelessWidget {
                           CalculatorButton(
                               text: '−',
                               buttonWidth: buttonWidth,
-                              buttonHeight: buttonOpSize,
+                              buttonHeight: buttonHeight,
+                              backgroundColor: buttonOpColor,
                               style: buttonOpStyle,
                               onPressed: () {
                                 context.read<Calculator>().submitChar('-');
@@ -319,7 +374,8 @@ class CalculatorWidget extends StatelessWidget {
                           CalculatorButton(
                               text: '+',
                               buttonWidth: buttonWidth,
-                              buttonHeight: buttonOpSize,
+                              buttonHeight: buttonHeight,
+                              backgroundColor: buttonOpColor,
                               style: buttonOpStyle,
                               onPressed: () {
                                 context.read<Calculator>().submitChar('+');
@@ -365,45 +421,52 @@ class CalculatorButton extends StatelessWidget {
   final void Function()? onPressed;
   final void Function()? onLongPress;
   final TextStyle? style;
-  final Color? iconColor;
+  final Color backgroundColor;
 
   const CalculatorButton({
     Key? key,
     this.text,
     required this.buttonHeight,
     required this.buttonWidth,
+    required this.backgroundColor,
     this.onLongPress,
     this.onPressed,
     this.style,
-    this.iconColor,
   }) : super(key: key);
+
+  static const double padding = 3;
 
   @override
   Widget build(BuildContext context) {
     final Brightness brightness = Theme.of(context).brightness;
-
-    final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
-      foregroundColor:
-          brightness == Brightness.dark ? Colors.white24 : Colors.black26,
-      backgroundColor: Colors.transparent,
-      minimumSize: Size(buttonWidth, buttonHeight),
-      elevation: 0,
-      animationDuration: const Duration(milliseconds: 30),
-    );
-
-    return ElevatedButton(
-      style: raisedButtonStyle,
-      onPressed: onPressed,
-      onLongPress: onLongPress,
-      child: text == "←"
-          ? Icon(
-              Icons.backspace,
-              color: iconColor,
-            )
-          : Text(
-              text ?? '',
-              style: style,
-            ),
+    return Padding(
+      padding: const EdgeInsets.all(padding),
+      child: AnimatedButton(
+        onPressed: onPressed,
+        onLongPress: onLongPress,
+        initialRadius: buttonHeight / 2,
+        finalRadius: buttonHeight / 5,
+        foregroundColor: Colors.white,
+        backgroundColor: backgroundColor,
+        child: SizedBox(
+          width: (buttonHeight - 2 * padding) * 0.55,
+          height: buttonHeight - 2 * padding,
+          child: Center(
+            child: text == "←"
+                ? Icon(
+                    Icons.backspace,
+                    color: Colors.black,
+                  )
+                : Text(
+                    text ?? '',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 25,
+                    ),
+                  ),
+          ),
+        ),
+      ),
     );
   }
 }

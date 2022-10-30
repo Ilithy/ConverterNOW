@@ -23,10 +23,18 @@ class AppScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void openCalculator() {
+      const double modalHeight = 340;
       showModalBottomSheet<void>(
         context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(modalHeight / 12),
+          ),
+        ),
         builder: (BuildContext context) {
-          return CalculatorWidget();
+          return CalculatorWidget(
+            modalHeight: modalHeight,
+          );
         },
       );
     }
